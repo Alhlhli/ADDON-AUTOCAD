@@ -1,0 +1,272 @@
+@echo off
+setlocal enabledelayedexpansion
+chcp 65001 >nul
+color 07
+title AutoCAD Add-ons by Al3mer
+mode con: cols=66 lines=88
+
+:: Initialize success flag
+set "success=true"
+set "extracted_files="
+set "extracted_dirs="
+
+:: Function to display colored text
+call :colorText 0A "========================================="
+call :colorText 0A "Welcome to AutoCAD Extensions Installation"
+call :colorText 0A "========================================="
+echo.
+timeout /t 1 /nobreak >nul
+
+call :colorText 0B "========================================="
+call :colorText 0B "           AutoCAD Add-ons by Al3mer"
+call :colorText 0B "========================================="
+echo.
+timeout /t 1 /nobreak >nul
+
+call :colorText 0C "========================================="
+call :colorText 0C "           t.me\pro3mer"
+call :colorText 0C "========================================="
+
+set "scriptDir=%~dp0"
+
+:: Loop through the years from 2010 to 2030
+for /l %%Y in (2010, 1, 2030) do (
+    set "acad_path=C:\Program Files\Autodesk\AutoCAD %%Y"
+    set "appdata_path=%AppData%\Autodesk\ACA %%Y\enu\Support"
+    set "progdata_path=%ProgramData%\Autodesk\ACA %%Y\enu\Plotters\Plot Styles"
+	set "lisps_path=C:\Program Files\Autodesk\AutoCAD %%Y\Lisps"
+	set "fonts_path=C:\Program Files\Autodesk\AutoCAD %%Y\Fonts"
+    set "template_path=%ProgramData%\Autodesk\ACA %%Y\enu\Template"
+
+
+    :: Check if the path exists
+    if exist "!acad_path!" (
+        powershell -command "Add-Type -AssemblyName PresentationFramework; [System.Windows.MessageBox]::Show('The installed version is (AutoCAD %%Y) الإصدار المثبت لديك هو', 'AutoCAD Version')"
+        set "versions=!versions! %%Y"
+ timeout /t 1 /nobreak >nul
+       
+        :: Shortcuts
+        echo.
+        call :colorText 0E "====================================="
+        call :colorText 0E "            Shortcuts"
+        call :colorText 0E "====================================="
+        echo.
+        if exist "!appdata_path!\acad.pgp" (
+            xcopy /s /y /q "%~dp0Shortcute\acad.pgp" "!appdata_path!\"
+            if errorlevel 1 set "success=false"
+            set "extracted_files=!extracted_files!Shortcute\acad.pgp,"
+            call :colorText 0A "Shortcut file copied for %%Y"
+        ) else (
+            set "success=false"
+            call :colorText 0C "Shortcut file not found for %%Y"
+        )
+ timeout /t 1 /nobreak >nul
+       
+        :: Plot styles
+        echo.
+        call :colorText 0E "====================================="
+        call :colorText 0E "           Plot styles"
+        call :colorText 0E "====================================="
+        echo.
+        if exist "!progdata_path!" (
+            xcopy /s /y /q "%~dp0Plot Style" "!progdata_path!\"
+            if errorlevel 1 set "success=false"
+            set "extracted_files=!extracted_files!Plot Style,"
+            call :colorText 0A "Plot Style file copied for %%Y"
+        ) else (
+            set "success=false"
+            call :colorText 0C "Plot Style file not found"
+        )
+timeout /t 1 /nobreak >nul
+        
+        :: LISPs
+        echo.
+        call :colorText 0E "====================================="
+        call :colorText 0E "               LISPs"
+        call :colorText 0E "====================================="
+        echo.
+        if not exist "!lisps_path!" (
+            md "!lisps_path!"
+            if errorlevel 1 set "success=false"
+            set "extracted_dirs=!extracted_dirs!Lisps,"
+            call :colorText 0A "Lisp directory created for %%Y"
+        )
+        xcopy /s /y /q "%~dp0Lisps" "!lisps_path!\"
+        if errorlevel 1 set "success=false"
+        set "extracted_files=!extracted_files!Lisps,"
+        call :colorText 0A "Lisp files copied  %%Y"
+timeout /t 1 /nobreak >nul
+       
+        :: Fonts
+        echo.
+        call :colorText 0E "====================================="
+        call :colorText 0E "             Fonts"
+        call :colorText 0E "====================================="
+        echo.
+        if exist "!fonts_path!" (
+            xcopy /s /y /q "%~dp0fonts" "!fonts_path!\"
+            if errorlevel 1 set "success=false"
+            set "extracted_files=!extracted_files!fonts,"
+            call :colorText 0A "Font files copied for %%Y"
+        ) else (
+            set "success=false"
+            call :colorText 0C "Font files not found for %%Y"
+        )
+ timeout /t 1 /nobreak >nul
+       
+        :: Template
+        echo.
+        call :colorText 0E "====================================="
+        call :colorText 0E "            Template"
+        call :colorText 0E "====================================="
+        echo.
+        if exist "!template_path!\Aec Model (Metric Stb).dwt" (
+            xcopy /s /y /q "%~dp0Template\Aec Model (Metric Stb).dwt" "!template_path!\"
+            if errorlevel 1 set "success=false"
+            set "extracted_files=!extracted_files!Template\Aec Model (Metric Stb).dwt,"
+            call :colorText 0A "Template file copied for %%Y"
+        ) else (
+            set "success=false"
+            call :colorText 0C "Template file not found for %%Y"
+        )
+timeout /t 2 /nobreak >nul
+
+    )
+)
+
+:: Display success or failure message
+if "%success%"=="true" (
+    call :colorText 0A "Installation completed successfully."
+) else (
+    call :colorText 0C "Installation failed."
+)
+
+REM Create HTML file for farewell message
+(
+echo ^<!DOCTYPE html^>
+echo ^<html lang="ar"^>
+echo ^<head^>
+echo     ^<meta charset="UTF-8"^>
+echo     ^<meta name="viewport" content="width=device-width, initial-scale=1.0"^>
+echo     ^<title^>Farewell Message^</title^>
+echo     ^<style^>
+echo         body {
+echo             font-family: Arial, sans-serif;
+echo             text-align: center;
+echo             margin: 20px;
+echo         }
+echo         .big-text {
+echo             font-size: 24px;
+echo             font-weight: bold;
+echo             margin-bottom: 20px;
+echo         }
+echo         .list {
+echo             text-align: left;
+echo             margin: 20px auto;
+echo             width: 50%%;
+echo         }
+echo         table {
+echo             width: 30%%;
+echo             margin: 8px auto;
+echo             border-collapse: collapse;
+echo         }
+echo         th, td {
+echo             border: 1px solid black;
+echo             padding: 8px;
+echo             text-align: center;
+echo         }
+echo     ^</style^>
+echo ^</head^>
+echo ^<body^>
+echo     ^<div class="big-text"^>Installation completed successfully.^</div^>
+echo     ^<div class="big-text"^>Automatic copying of additions has been completed.^</div^>
+echo     ^<div class="big-text"^>With the help of artificial intelligence chatgpt - gemeni.^</div^>
+echo     ^<div class="big-text"^> For more information, please see file PDF.^</div^>
+
+echo     ^<hr^>
+
+echo     ^<div class="big-text"^>تم التثبيت بنجاح.^</div^>
+echo     ^<div class="big-text"^>تمت عملية النسخ التلقائي للإضافات .^</div^>
+echo     ^<div class="big-text"^>chatgpt - gemeni بمساعدة الذكاء الاصطناعي .^</div^>
+echo     ^<div class="big-text"^>PDF لمزيد من المعلومات نأمل الاطلاع على ملف .^</div^>
+
+echo     ^<hr^>
+
+echo     ^<h2^> AutoCAD Add-ons have been successfully ^<br^> added to AUTOCAD "%versions%"  ^</h2^>
+echo     ^<hr^>
+
+echo     ^<table^>
+echo         ^<tr^>
+echo             ^<th^>File/Directory^</th^>
+echo             ^<th^>Status^</th^>
+echo         ^</tr^>
+) > "%scriptDir%farewell_message.html"
+
+:: Add extracted files to the HTML file
+for %%F in ("!extracted_files!") do (
+    echo ^<tr^> >> "%scriptDir%farewell_message.html"
+    echo     ^<td^>%%F^</td^> >> "%scriptDir%farewell_message.html"
+    echo     ^<td^>Extracted^</td^> >> "%scriptDir%farewell_message.html"
+    echo ^</tr^> >> "%scriptDir%farewell_message.html"
+)
+
+:: Add extracted directories to the HTML file
+for %%D in (!extracted_dirs!) do (
+    echo ^<tr^> >> "%scriptDir%farewell_message.html"
+    echo     ^<td^>%%D^</td^> >> "%scriptDir%farewell_message.html"
+    echo     ^<td^>Created^</td^> >> "%scriptDir%farewell_message.html"
+    echo ^</tr^> >> "%scriptDir%farewell_message.html"
+)
+
+
+:: Complete the HTML file
+(
+echo     ^</table^>
+echo     ^<table^>
+echo         ^<tr^>
+echo             ^<td^>^<b^>Archt/ Amer Al-hlhli^</b^>^</td^>
+echo             ^<td^>^<b^>م/ عامر الحلحلي^</b^>^</td^>
+echo         ^</tr^>
+echo         ^<tr^>
+echo             ^<td^>^<a href="https://t.me/pro3mer"^>Engineering programs^</a^>^</td^>
+echo             ^<td^>^<a href="https://t.me/pro3mer"^>برامج هندسية^</a^>^</td^>
+echo         ^</tr^>
+echo         ^<tr^>
+echo             ^<td^>^<a href="https://t.me/apk3mer"^>Activated Android applications^</a^>^</td^>
+echo             ^<td^>^<a href="https://t.me/apk3mer"^>تطبيقات اندرويد مفعلة^</a^>^</td^>
+echo         ^</tr^>
+echo         ^<tr^>
+echo             ^<td^>^<a href="https://t.me/ppt3mer"^>Distinctive PowerPoint files^</a^>^</td^>
+echo             ^<td^>^<a href="https://t.me/ppt3mer"^>ملفات باوربوينت مميزة^</a^>^</td^>
+echo         ^</tr^>
+echo         ^<tr^>
+echo             ^<td^>^<a href="https://www.youtube.com/@hlhli?sub_confirmation=1"^>YouTube channel^</a^>^</td^>
+echo             ^<td^>^<a href="https://www.youtube.com/@hlhli?sub_confirmation=1"^>قناة اليوتيوب^</a^>^</td^>
+echo         ^</tr^>
+echo     ^</table^>
+echo ^</body^>
+echo ^</html^>
+) >> "%scriptDir%farewell_message.html"
+
+:: Open HTML file in default browser
+start "" "%scriptDir%farewell_message.html"
+:: Wait for 7 second before exiting
+timeout /t 7 /nobreak >nul
+
+:: Open pdf file in default browser
+start "" "%scriptDir%amer.pdf"
+
+
+:: Wait for 1 second before exiting
+timeout /t 1 /nobreak >nul
+exit
+
+endlocal
+goto :eof
+
+:colorText
+:: %1 - color code
+:: %2 - text to display
+echo %~2
+color %1
+exit /b
